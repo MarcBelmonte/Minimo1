@@ -63,10 +63,14 @@ public class MyBikeImpl implements MyBike {
 
     @Override
     public Bike getBike(String stationId, String userId) throws UserNotFoundException, StationNotFoundException {
+
+
         Station s = stations.get(stationId); // NO CONSIGO ENCONTRAR LA ESTACION A PARTIR DE SU ID, NO ENTIENDO
         Bike b = null;
         b = this.colaBikes.poll();
         return b;
+
+
     }
 
     @Override
