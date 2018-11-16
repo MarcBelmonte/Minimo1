@@ -71,6 +71,7 @@ public class Station {
         this.lon = lon;
     }
 
+
     public LinkedList<Bike> getMyBikes(){
         return this.inv;
     }

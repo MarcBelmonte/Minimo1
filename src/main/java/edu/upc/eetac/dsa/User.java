@@ -12,9 +12,13 @@ public class User {
         this.idUser = idUser;
         this.name = name;
         this.surname = surname;
+        this.bikeList = new LinkedList<>();
     }
     public User(String idUser){
-
+        this.idUser = idUser;
+        this.name = name;
+        this.surname = surname;
+        this.bikeList = new LinkedList<>();
     }
 
     public String getIdUser() {
@@ -39,5 +43,13 @@ public class User {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public LinkedList<Bike> getBikeList() {
+        return bikeList;
+    }
+
+    public void addBike(Bike b){
+        bikeList.add(b);
     }
 }

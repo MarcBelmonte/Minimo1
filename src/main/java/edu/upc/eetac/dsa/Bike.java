@@ -15,6 +15,7 @@ public class Bike {
     public Bike(String idBike){
         this.idBike = idBike;
         this.idStation = idStation;
+        this.kms = kms;
     }
     public Bike() {
     }

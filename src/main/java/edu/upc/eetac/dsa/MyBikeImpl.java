@@ -14,7 +14,6 @@ public class MyBikeImpl implements MyBike {
     private LinkedList<Bike> bikes;
     private HashMap<String,User> users;
     private LinkedList<Bike> listaBikes;
-    private Queue<Bike> colaBikes = new LinkedList<>();
 
     public MyBikeImpl(){
         stations = new ArrayList<Station>();
@@ -28,46 +27,62 @@ public class MyBikeImpl implements MyBike {
     }
 
     public void addUser(String idUser, String name, String surname){
-        logger.info("Añadiendo usuario");
+        log.info("Añadiendo usuario");
         User user = new User(idUser,name,surname);
         users.put(idUser,user);
 
     }
 
     public void addStation(String idStation, String description, int max, double lat, double lon){
+        log.info("Añadiendo Estacion");
         Station sta = new Station(idStation,description,max,lat,lon);
         stations.add(sta);
     }
     public void addBike(String idBike, String description, double kms, String idStation) throws StationFullException, StationNotFoundException{
-        for(Station s:stations){
-            if(s.getIdStation().equals(idStation)){
-                s.addBike(new Bike(idBike,description,kms));
+        log.info("Añadiendo Bici");
+        for(Station sta:stations){
+            if(sta.getIdStation().equals(idStation)){
+                sta.addBike(new Bike(idBike,description,kms,idStation));
             }
         }
+        log.info("Bici "+idBike+ "ha sido añadida en la estación" + idStation);
     }
 
     @Override
     public List<Bike> bikesByStationOrderByKms(String idStation) throws StationNotFoundException {
-        //Copiamos la lista
-        List<Bike> lista = new ArrayList<>(this.bikes);
 
-        //Aplicamos criterio de orden
-        Collections.sort(lista, new Comparator<Bike>() {
-            @Override
-            public int compare(Bike o1, Bike o2) {
-                return (int)(o1.getKms()-o2.getKms());
-            }
-        });
-        return lista;
+           //Copiamos la lista
+           List<Bike> listaRet = new ArrayList<>(this.bikes);
+           for (Station sta : stations) {
+               if (sta.getIdStation().equals(idStation)) {
+                   List<Bike> bikes = sta.getListaBikes();
+                   for (Bike bike : bikes) {
+                       listaRet.add(bike);
+                   }
+                   //Aplicamos criterio de orden
+                   Collections.sort(listaRet, new Comparator<Bike>() {
+                       @Override
+                       public int compare(Bike o1, Bike o2) {
+                           return (int) (o1.getKms() - o2.getKms());
+                       }
+                   });
+               }
+           }
+           return listaRet;
+
+
     }
 
     @Override
     public Bike getBike(String stationId, String userId) throws UserNotFoundException, StationNotFoundException {
-
-
-        Station s = stations.get(stationId); // NO CONSIGO ENCONTRAR LA ESTACION A PARTIR DE SU ID, NO ENTIENDO
+        log.info("Obteniendo bici de "+userId+ "de la estacion"+stationId);
         Bike b = null;
-        b = this.colaBikes.poll();
+        for(Station sta: stations) {
+            if (sta.getIdStation().equals(stationId)) {
+                b = sta.getMyBikes().poll();
+            }
+
+        }
         return b;
 
 
@@ -75,12 +90,17 @@ public class MyBikeImpl implements MyBike {
 
     @Override
     public List<Bike> bikesByUser(String userId) throws UserNotFoundException {
-        User u = this.users.get(userId);
+        log.info("Obteniendo bikes de:" + userId);
+
         LinkedList<Bike> listaBikes = new LinkedList<>();
-        for (Bike b: bikes){
-            if(bikes.c)
+        List<User> listUsers = new ArrayList<>();
+
+        for (User u: listUsers){
+            if(u.getIdUser().equals(userId)){
+                listaBikes = u.getBikeList();
+            }
         }
-        return null;
+        return listaBikes;
     }
 
     @Override
@@ -97,11 +117,20 @@ public class MyBikeImpl implements MyBike {
 
     @Override
     public int numBikes(String idStation) throws StationNotFoundException {
-        return null;
+        log.info("Obteniendo el numero de bicis de:"+ idStation);
+        int num = 0;
+        for(Station sta: stations){
+            if(sta.getIdStation().equals(idStation)){
+                num = sta.getListaBikes().size();
+            }
+        }
+        log.info("El tamaño de la estación"+idStation+" es:"+num);
+        return num;
     }
 
     @Override
     public void clear() {
-
+        stations.clear();
+        users.clear();
     }
 }
