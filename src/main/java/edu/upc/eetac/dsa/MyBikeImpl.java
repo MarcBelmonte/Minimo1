@@ -39,8 +39,11 @@ public class MyBikeImpl implements MyBike {
         stations.add(sta);
     }
     public void addBike(String idBike, String description, double kms, String idStation) throws StationFullException, StationNotFoundException{
-        Bike bike = new Bike(idBike,description,kms,idStation);
-        bikes.add(bike);
+        for(Station s:stations){
+            if(s.getIdStation().equals(idStation)){
+                s.addBike(new Bike(idBike,description,kms));
+            }
+        }
     }
 
     @Override
