@@ -66,9 +66,9 @@ import java.util.List;
         })
         @Path("/addBike")
         @Consumes(MediaType.APPLICATION_JSON)
-        public Response addBike(Bike p,String stationId){
+        public Response addBike(Bike p){
             try{
-                mb.addBike(p.getBikeId(),p.getDescription(),p.getKms(),stationId);
+                mb.addBike(p.getBikeId(),p.getDescription(),p.getKms(),p.getIdStation());
                 return Response.status(201).build();
             }catch (StationFullException e){
                 e.printStackTrace();
